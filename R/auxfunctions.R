@@ -1,10 +1,10 @@
 #' @import ggplot2
 #' @import graphics
+#' @import plotrix
 NULL
 
 mbacClass = function(list, ...) {
-  model = structure(list, class = "mbac",
-                    my_attribute = "MultiBaC_output")
+  model = structure(list, class = "mbac")
   return(model)
 }
 
@@ -71,4 +71,18 @@ getData <- function(ListOfBatches) {
   }
   return (inputList)
 }
+
+findGrid <- function(test.comp, values) {
+  grid <- lapply(values, function(x) {
+    cbind(1:length(x),x)
+  })
+
+  toplot <- NULL
+  for ( i in seq_along(grid)) {
+    toplot <- rbind(toplot, grid[[i]])
+  }
+  plotrix::emptyspace(toplot[,1],
+                      toplot[,2])
+}
+
 
