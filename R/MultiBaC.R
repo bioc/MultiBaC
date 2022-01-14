@@ -194,6 +194,7 @@ batchCorrection <- function(mbac, multiBatchDesign,
   correctedOmics <- inputList
   ascamodels <- list()
   for ( omic in names(inputList[[1]])) {
+
     Xunfold <- NULL
     set_lims <- 0
     for ( lab in names(inputList)) {
@@ -215,6 +216,7 @@ batchCorrection <- function(mbac, multiBatchDesign,
     for (i in 1:length(Fac)){
       Fac0[names(Fac[i])]<-Fac[names(Fac[i])]
     }
+
     asca<- ASCA.2f(Xunfold, Designa = cond_matrix, Designb = batch_matrix,
                    Fac = Fac0, Interaction = Interaction,
                    Variability = Variability)

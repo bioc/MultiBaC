@@ -18,21 +18,35 @@ Xoff<-X-(cbind(matrix(1,p,1))%*%rbind(offset))
 
 #eigen command sorts the eigenvalues in decreasing orden.
 
-eigen<-eigen(Xoff%*%t(Xoff)/(p-1))
-var<-cbind(eigen$values/sum(eigen$values),cumsum(eigen$values/sum(eigen$values)))
-
-loadings2<-eigen$vectors
-scores2<-t(Xoff)%*%loadings2
-
-normas2<-sqrt(apply(scores2^2,2,sum))
-
-scores1<-loadings2%*%diag(normas2)
-loadings1<-scores2%*%diag(1/normas2)
-
+# eigen<-eigen(Xoff%*%t(Xoff)/(p-1))
+# var<-cbind(eigen$values/sum(eigen$values),cumsum(eigen$values/sum(eigen$values)))
+#
+# loadings2<-eigen$vectors
+# scores2<-t(Xoff)%*%loadings2
+#
+# normas2<-sqrt(apply(scores2^2,2,sum))
+#
+# scores1<-loadings2%*%diag(normas2)
+# loadings1<-scores2%*%diag(1/normas2)
 if (is.null(ncomp)) {
-  ncomp <- dim(scores1)[2]
+  ncomp <- min(dim(Xoff))-1
 }
-output<-list(eigen,var[1:ncomp,],scores1[,1:ncomp],loadings1[,1:ncomp])
+
+if(p<500) {
+  crossval <- p
+} else {
+  crossval <- 5
+}
+
+pc <- pcaMethods::nipalsPca(Xoff, nPcs = ncomp)
+eigen <- pc@scores
+scores1 <- pc@scores
+loadings1 <- pc@loadings
+var <- data.frame(pc@R2cum,
+                  pc@R2cum)
+rownames(var) <- 1:ncomp
+
+output<-list(eigen,var,scores1,loadings1)
 names(output)<-c("eigen","var.exp","scores","loadings")
 output
 }
